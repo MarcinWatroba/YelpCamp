@@ -26,31 +26,21 @@ function seedDB() {
               .then(() => {
                   console.log("Removed Campgrounds!");
                })
-               .then(() => {
-                    let promises = [];
-                    data.forEach((seed) => {
-                        let p = Campground.create(seed)
-                                  .then(campground => {
-                                      console.log("added a campground");
-                                      const comment = {
-                                        text: "This place is great, but I wish there was internet",
-                                        author: "Homer"
-                                      }
-                                      return Promise.all([campground, Comment.create(comment)]);
-                                    })
-                                  .then(async (campground_comment) => {
-                                    await campground_comment[0].comments.push(campground_comment[1]);
-                                    await campground_comment[0].save();
-                                  })
-                                  .then(() => console.log("Created new comment"))
-                                  .catch(err => console.log(err));
-                            promises.push(p);   
-                });
-                return Promise.all(promises);
-               })
-               .then(() => console.log("FINISHED"))
                .catch(err => console.log(err));            
 }
+
+// .then(() => {
+//   let promises = [];
+//   data.forEach((seed) => {
+//       let p = Campground.create(seed)
+//                 .then(campground => console.log("added a campground"))
+//                 .then(() => console.log("Created new comment"))
+//                 .catch(err => console.log(err));
+//           promises.push(p);   
+// });
+// return Promise.all(promises);
+// })
+// .then(() => console.log("FINISHED"))
 
 // function seedDB(){
 //    //Remove all campgrounds
@@ -91,6 +81,37 @@ function seedDB() {
 //         });
 //     }); 
 //     //add a few comments
+// }
+
+// function seedDB() {
+//   Campground.deleteMany()
+//             .then(() => {
+//                 console.log("Removed Campgrounds!");
+//              })
+//              .then(() => {
+//                   let promises = [];
+//                   data.forEach((seed) => {
+//                       let p = Campground.create(seed)
+//                                 .then(campground => {
+//                                     console.log("added a campground");
+//                                     const comment = {
+//                                       text: "This place is great, but I wish there was internet",
+//                                       author: "Homer"
+//                                     }
+//                                     return Promise.all([campground, Comment.create(comment)]);
+//                                   })
+//                                 .then(async (campground_comment) => {
+//                                   await campground_comment[0].comments.push(campground_comment[1]);
+//                                   await campground_comment[0].save();
+//                                 })
+//                                 .then(() => console.log("Created new comment"))
+//                                 .catch(err => console.log(err));
+//                           promises.push(p);   
+//               });
+//               return Promise.all(promises);
+//              })
+//              .then(() => console.log("FINISHED"))
+//              .catch(err => console.log(err));            
 // }
 
 module.exports = seedDB;
