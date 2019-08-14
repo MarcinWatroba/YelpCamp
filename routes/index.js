@@ -18,11 +18,13 @@ router.post("/register", (req, res) => {
     const newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password)
         .then(user => passport.authenticate("local")(req, res, () => {
+            req.flash("success", `Registration Successful, welcome ${user.username}`);
             return res.redirect("/campgrounds");
         }))
         .catch(err => {
             console.log(err);
-            return res.render("register");
+            req.flash("error", err.message);
+            return res.redirect("/register");
         });
 
 });
@@ -39,7 +41,8 @@ router.post("/login", passport.authenticate("local", {
 //logging out action
 router.get("/logout", (req, res) => {
     req.logout();
-    res.redirect("/campgrounds");
+    req.flash("success", "Succesfully logged out");
+    res.redirect("back");
 });
 
 module.exports = router;

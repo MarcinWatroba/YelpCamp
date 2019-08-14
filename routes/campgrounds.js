@@ -23,7 +23,10 @@ router.post("/", middleware.isLoggedIn, (req, res) => {
     const newCamp =  {name: newName, image: newImage, description: newDesc, author: author};
 
     Campground.create(newCamp)
-              .then(() => res.redirect("/campgrounds"))
+              .then(() => {
+                  req.flash("success", "Successfully added a new campground");
+                  return res.redirect("/campgrounds");
+                })
               .catch(err => console.log(err))
 });
 
@@ -36,11 +39,19 @@ router.get("/new", middleware.isLoggedIn, (req, res) => {
 router.get("/:id", (req, res) => {
     Campground.findById(req.params.id)
               .populate("comments")
-              .exec()
               .then(campground => {
-                  res.render("campgrounds/show", {camp: campground});
+                  if(campground)
+                    return res.render("campgrounds/show", {camp: campground});
+                  else
+                    {
+                        req.flash("error", "Something went wrong");
+                        return res.redirect("back");
+                    }
                 })
-              .catch(err => console.log(err));
+              .catch(err => {
+                  console.log(err);
+                  return res.redirect("/campgrounds");
+                });
 });
 
 //EDIT - form for editing a campground
@@ -54,15 +65,24 @@ router.get("/:id/edit", middleware.isLoggednAuthorized(Campground, "id"), (req, 
 router.put("/:id", middleware.isLoggednAuthorized(Campground, "id"), (req, res) => {
 
     Campground.findByIdAndUpdate(req.params.id, req.body.campground)
-              .then(updCamp => res.redirect(`/campgrounds/${updCamp._id}`))
-              .catch(err => console.log(err));
+              .then(updCamp => {
+                  req.flash("success", "Successfully edited your campground");
+                  return res.redirect(`/campgrounds/${updCamp._id}`);
+                })
+              .catch(err => {
+                  req.flash("error", "Something went wrong");
+                  console.log(err);
+                });
 });
 
 //DESTROY - deletes a campground
 router.delete("/:id", middleware.isLoggednAuthorized(Campground, "id"), (req, res) => {
 Campground.findByIdAndRemove(req.params.id)
           .then(deletedCamp => Comment.remove({author: {id: deletedCamp.author.id}}))
-          .then(() => res.redirect("/campgrounds"))
+          .then(() => {
+              req.flash("success", "Successfully deleted your campground");
+              return res.redirect("/campgrounds");
+            })
           .catch(err => {
               console.log(err);
               return res.redirect("/campgrouds");

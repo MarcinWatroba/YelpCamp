@@ -2,9 +2,20 @@ body {
     background-color: #f3f3f3;
 }
 
+.disclaimer {
+    margin-top: 2.5rem;
+    text-align: center;
+    color: red;
+}
+
+.course-info {
+    text-align: center;
+    color: red;
+}
+
 .btn-group-xs > .btn, .btn-xs {
     padding: .25rem .4rem;
     font-size: .875rem;
     line-height: 0.8;
     border-radius: .2rem;
-  }
+}
