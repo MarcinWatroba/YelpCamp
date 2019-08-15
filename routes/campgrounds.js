@@ -13,14 +13,12 @@ router.get("/", (req, res) => {
 
 //CREATE - add new campground to db
 router.post("/", middleware.isLoggedIn, (req, res) => {
-    const newName = req.body.camp;
-    const newImage = req.body.img;
-    const newDesc = req.body.description;
-    const author = {
-        id: req.user._id,
-        username: req.user.username
+
+    const newCamp = req.body.campground;
+    newCamp.author = author = {
+      id: req.user._id,
+      username: req.user.username
     };
-    const newCamp =  {name: newName, image: newImage, description: newDesc, author: author};
 
     Campground.create(newCamp)
               .then(() => {
@@ -63,7 +61,6 @@ router.get("/:id/edit", middleware.isLoggednAuthorized(Campground, "id"), (req, 
 
 //UPDATE - updating campground data
 router.put("/:id", middleware.isLoggednAuthorized(Campground, "id"), (req, res) => {
-
     Campground.findByIdAndUpdate(req.params.id, req.body.campground)
               .then(updCamp => {
                   req.flash("success", "Successfully edited your campground");
@@ -78,16 +75,15 @@ router.put("/:id", middleware.isLoggednAuthorized(Campground, "id"), (req, res) 
 //DESTROY - deletes a campground
 router.delete("/:id", middleware.isLoggednAuthorized(Campground, "id"), (req, res) => {
 Campground.findByIdAndRemove(req.params.id)
-          .then(deletedCamp => Comment.remove({author: {id: deletedCamp.author.id}}))
-          .then(() => {
+          .then(deletedCamp => Comment.deleteMany({'_id': { $in: deletedCamp.comments}}))
+          .then(deleted => {
               req.flash("success", "Successfully deleted your campground");
               return res.redirect("/campgrounds");
-            })
+          })
           .catch(err => {
               console.log(err);
               return res.redirect("/campgrouds");
-            });
-
+          });
 });
 
 module.exports = router;

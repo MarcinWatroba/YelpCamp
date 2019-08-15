@@ -58,7 +58,8 @@ router.put("/:comment_id", middleware.isLoggednAuthorized(Comment, "comment_id")
 //DESTROY - deletes a comment
 router.delete("/:comment_id", middleware.isLoggednAuthorized(Comment, "comment_id"), (req, res) => {
     Comment.findByIdAndRemove(req.params.comment_id)
-              .then(() => {
+              .then(deletedComment => Campground.updateOne({'_id': req.params.id}, {$pull: { 'comments': deletedComment.id }}))
+              .then(() => {        
                   req.flash("success", "Successfully deleted your comment");
                   return res.redirect(`/campgrounds/${req.params.id}`);
                 })

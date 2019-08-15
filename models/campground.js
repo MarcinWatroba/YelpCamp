@@ -4,7 +4,12 @@ const mongoose   = require("mongoose"),
 const campgroundSchema = new mongoose.Schema({
     name: String,
     image: String,
+    price: String,
     description: String,
+    createdAt: { 
+        type: Date, 
+        default: Date.now
+    },
     author: {
         id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -16,12 +21,6 @@ const campgroundSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment"
     }]
-});
-
-campgroundSchema.pre('remove', { query: true, document: false }, (next) => {
-    console.log("removing");
-    // Comment.remove({author: {id: this.author.id}}).exec();
-    next();
 });
 
 module.exports = mongoose.model("Campground", campgroundSchema);

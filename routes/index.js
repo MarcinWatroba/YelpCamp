@@ -18,7 +18,7 @@ router.post("/register", (req, res) => {
     const newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password)
         .then(user => passport.authenticate("local")(req, res, () => {
-            req.flash("success", `Registration Successful, welcome ${user.username}`);
+            req.flash("success", `Registration Successful, Welcome ${user.username}`);
             return res.redirect("/campgrounds");
         }))
         .catch(err => {
@@ -34,9 +34,12 @@ router.get("/login", (req, res) => res.render("login"));
 
 //logging in action
 router.post("/login", passport.authenticate("local", {
-    successRedirect: "/campgrounds",
-    failureRedirect: "/login"
-}), (req, res) => {});
+    failureRedirect: "/login",
+    failureFlash: true
+}), (req, res) => {
+    req.flash("success", `Welcome ${req.body.username}`);
+    res.redirect("/campgrounds");
+});
 
 //logging out action
 router.get("/logout", (req, res) => {
