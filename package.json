@@ -4,7 +4,8 @@
   "description": "My attempt at building a full-stack website which is a part of \"The Web Developer Bootcamp\" Udemy course.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
