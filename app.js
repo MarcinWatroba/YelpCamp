@@ -18,7 +18,7 @@ const commentRoutes     = require("./routes/comments"),
       indexRoutes        = require("./routes/index");
 
 const url = process.env.DATABASEURL || "mongodb://localhost:27017/yelp_camp";
-mongoose.connect("mongodb+srv://marcin388:EK6SpQfx9anL3gLY@yelpcamp-y4lrm.mongodb.net/test?retryWrites=true&w=majority", {useNewUrlParser: true});
+mongoose.connect(url, {useNewUrlParser: true});
 mongoose.set('useFindAndModify', false);    
 
 app.use(bodyParser.urlencoded({extended: true}));
